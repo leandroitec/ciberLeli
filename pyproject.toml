@@ -1,0 +1,16 @@
+[project]
+name = "ciberleli"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "leandroitec", email = "l.odetto@itecriocuarto.org.ar" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "djangorestframework>=3.18.0",
+]
+
+[project.scripts]
+ciberleli = "ciberleli:main"
+
