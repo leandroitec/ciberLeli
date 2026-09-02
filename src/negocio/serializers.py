@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Computadora, SesionUso, Producto, VentaProducto, Tarifa
+from .models import Computadora, SesionUso, Tarifa
 
 class TarifaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,19 +12,8 @@ class ComputadoraSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SesionUsoSerializer(serializers.ModelSerializer):
+    computadora_detalle = ComputadoraSerializer(source='computadora', read_only=True)
+    # para mostrar detalles
     class Meta:
         model = SesionUso
         fields = '__all__'
-        # Evitamos que alteren manualmente el precio congelado desde la API externa
-        read_only_fields = ['precio_tarifa_aplicado']
-
-class ProductoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Producto
-        fields = '__all__'
-
-class VentaProductoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VentaProducto
-        fields = '__all__'
-
