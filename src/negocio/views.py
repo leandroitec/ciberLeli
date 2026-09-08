@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .models import Computadora, SesionUso
-from .serializers import ComputadoraSerializer, SesionUsoSerializer
+from .models import Computadora, SesionUso, Tarifa
+from .serializers import ComputadoraSerializer, SesionUsoSerializer, TarifaSerializer
 
 @api_view(["GET", "POST"])
 def computadoras_list(request):
@@ -102,3 +102,46 @@ def sesion_detail(request, pk):
         sesion.delete()
         return Response({"mensaje": "Sesión eliminada"}, status=status.HTTP_204_NO_CONTENT)
 
+
+@api_view(["GET", "POST"])
+def tarifas_list(request):
+    if request.method == "GET":
+        tarifas = Tarifa.objects.all()
+        serializer = TarifaSerializer(tarifas, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == "POST":
+        serializer = TarifaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET", "PUT", "DELETE"])
+def tarifa_detail(request, pk):
+    try:
+        tarifa = Tarifa.objects.get(pk=pk)
+    except Tarifa.DoesNotExist:
+        return Response({"error": "Tarifa no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        serializer = TarifaSerializer(tarifa)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == "PUT":
+        serializer = TarifaSerializer(tarifa, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == "DELETE":
+        tarifa.delete()
+        return Response({"mensaje": "Tarifa eliminada"}, status=status.HTTP_204_NO_CONTENT)
+    
+"""
+ {
+  "nombre": "Hora Estándar",
+  "precio_por_hora": "1200.00"
+}
+"""
