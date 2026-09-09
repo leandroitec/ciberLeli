@@ -1,0 +1,24 @@
+info:
+  name: compu
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://127.0.0.1:8000/api/computadoras/
+  body:
+    type: json
+    data: |-
+      {
+        "numero": 1,
+        "nombre": "PC Gamer 01",
+        "estado": "disponible",
+        "especificaciones": "Ryzen 5, 16GB RAM, RTX 3060"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

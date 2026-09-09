@@ -1,0 +1,25 @@
+info:
+  name: sesion
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://127.0.0.1:8000/api/sesiones/
+  body:
+    type: json
+    data: |-
+      {
+        "usuario": 1,
+        "computadora": 1,
+        "tiempo_solicitado_minutos": 60,
+        "pagado": false,
+        "total_a_pagar": "1500.00"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

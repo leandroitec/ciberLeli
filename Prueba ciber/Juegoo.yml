@@ -1,0 +1,24 @@
+info:
+  name: Juegoo
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://127.0.0.1:8000/api/juegos/
+  body:
+    type: json
+    data: |
+      {
+        "nombre": "Counter-Strike 2",
+        "categoria": "shooter",
+        "requiere_cuenta_propia": true,
+        "computadoras": [1]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
