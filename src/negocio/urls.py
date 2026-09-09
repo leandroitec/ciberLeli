@@ -2,10 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('computadoras/', views.computadoras_list, name='computadoras_list'),
-    path('computadoras/<int:pk>/', views.computadora_detail, name='computadora_detail'),
-    path('sesiones/', views.sesiones_list, name='sesiones_list'),
-    path('sesiones/<int:pk>/', views.sesion_detail, name='sesion_detail'),
-    path('tarifas/', views.tarifas_list, name='tarifas_list'),
-    path('tarifas/<int:pk>/', views.tarifa_detail, name='tarifa_detail'),
+    path('computadoras/', views.ComputadoraListCreateView.as_view(), name='computadora-list-create'),
+    path('computadoras/<int:pk>/', views.ComputadoraDetailView.as_view(), name='computadora-detail'),
+    path('tarifas/', views.TarifaListCreateView.as_view(), name='tarifa-list-create'),
+    path('tarifas/<int:pk>/', views.TarifaDetailView.as_view(), name='tarifa-detail'),
+    path('sesiones/', views.SesionUsoListCreateView.as_view(), name='sesion-list-create'),
+    path('sesiones/<int:pk>/', views.SesionUsoDetailView.as_view(), name='sesion-detail'),
+    path('juegos/', views.JuegoListCreateView.as_view(), name='juego-list-create'),
+    path('juegos/<int:pk>/', views.JuegoDetailView.as_view(), name='juego-detail'),
 ]

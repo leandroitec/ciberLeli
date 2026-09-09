@@ -34,3 +34,19 @@ class Tarifa(models.Model):
 
     def __str__(self):
         return f"{self.nombre} (${self.precio_por_hora}/h)"
+    
+class Juego(models.Model):
+    CATEGORIAS = [
+        ('shooter', 'Shooter / FPS'),
+        ('moba', 'MOBA'),
+        ('carreras', 'Carreras'),
+        ('deportes', 'Deportes'),
+        ('estrategia', 'Estrategia'),
+    ]
+    nombre = models.CharField(max_length=100)
+    categoria = models.CharField(max_length=30, choices=CATEGORIAS, default='shooter')
+    requiere_cuenta_propia = models.BooleanField(default=False)
+    computadoras = models.ManyToManyField(Computadora, related_name='juegos', blank=True)
+
+    def __str__(self):
+        return self.nombre
