@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import viewsets, permissions
 from .models import Computadora, SesionUso, Tarifa, Juego
 from .serializers import (
     ComputadoraSerializer,
@@ -7,45 +7,31 @@ from .serializers import (
     JuegoSerializer,
 )
 
-class ComputadoraListCreateView(generics.ListCreateAPIView):
-    queryset = Computadora.objects.all()
-    serializer_class = ComputadoraSerializer
-
-class ComputadoraDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Computadora.objects.all()
-    serializer_class = ComputadoraSerializer
-
-
-class JuegoListCreateView(generics.ListCreateAPIView):
-    queryset = Juego.objects.all()
-    serializer_class = JuegoSerializer
-
-class JuegoDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Juego.objects.all()
-    serializer_class = JuegoSerializer
-
-
-class TarifaListCreateView(generics.ListCreateAPIView):
+class TarifaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tarifa.objects.all()
     serializer_class = TarifaSerializer
+    permission_classes = [permissions.AllowAny]
 
-class TarifaDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Tarifa.objects.all()
-    serializer_class = TarifaSerializer
+class ComputadoraViewSet(viewsets.ModelViewSet):
+    queryset = Computadora.objects.all()
+    serializer_class = ComputadoraSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-class SesionUsoListCreateView(generics.ListCreateAPIView):
+class JuegoViewSet(viewsets.ModelViewSet):
+    queryset = Juego.objects.all()
+    serializer_class = JuegoSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class SesionUsoViewSet(viewsets.ModelViewSet):
     queryset = SesionUso.objects.all().order_by('-inicio')
     serializer_class = SesionUsoSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         sesion = serializer.save()
         pc = sesion.computadora
         pc.estado = 'ocupada'
         pc.save()
-
-class SesionUsoDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SesionUso.objects.all()
-    serializer_class = SesionUsoSerializer
 
     def perform_update(self, serializer):
         sesion = serializer.save()
