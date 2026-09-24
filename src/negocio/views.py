@@ -1,4 +1,7 @@
-from rest_framework import viewsets, permissions
+from django.utils import timezone
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .models import Computadora, SesionUso, Tarifa, Juego
 from .serializers import (
     ComputadoraSerializer,
@@ -27,21 +30,30 @@ class SesionUsoViewSet(viewsets.ModelViewSet):
     serializer_class = SesionUsoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        sesion = serializer.save()
+    #finalizar sesion y liberar pc
+    @action(detail=True, methods=['get', 'post'], url_path='finalizar')
+    def finalizar_sesion(self, request, pk=None):
+        sesion = self.get_object()
+
+        if sesion.fin is not None:
+            return Response(
+                {"error": "Esta sesión ya fue finalizada previamente."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        sesion.fin = timezone.now()
+        sesion.pagado = True
+        sesion.save()
+
         pc = sesion.computadora
-        pc.estado = 'ocupada'
-        pc.save()
-
-    def perform_update(self, serializer):
-        sesion = serializer.save()
-        if sesion.fin or sesion.pagado:
-            pc = sesion.computadora
-            pc.estado = 'disponible'
-            pc.save()
-
-    def perform_destroy(self, instance):
-        pc = instance.computadora
         pc.estado = 'disponible'
         pc.save()
-        instance.delete()
+
+        return Response(
+            {
+                "mensaje": f"Sesión {sesion.id} finalizada con éxito. PC {pc.numero} liberada.",
+                "fin": sesion.fin,
+                "pagado": sesion.pagado
+            },
+            status=status.HTTP_200_OK
+        )
